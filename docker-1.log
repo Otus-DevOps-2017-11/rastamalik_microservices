@@ -6,4 +6,4 @@ hello-world                  latest              f2a91732366c        2 months ag
 docker inspect <u_container_id> - выводит описание окружения контейнера ( состояние контейнера, 
 метаданные контейнера (сетевые настройки, volume и т.д.), информация о драйверах).
 
-docker inspect <u_image_id> - выводит описание образа
+docker inspect <u_image_id> - выводит только описание образа.
