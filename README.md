@@ -1,4 +1,5 @@
 # rastamalik_microservices
+
 ## Homework-15
 1. Устанавливаем **docker-machine**.
 2. Создаем новый проект на **Google Cloud** названием **docker**.
@@ -58,6 +59,7 @@ gcloud compute firewall-rules create reddit-app \
 docker tag reddit:latest rastamalik/otus-reddit:1.0
 docker push rastamalik/otus-reddit:1.0
 ```
+
 
 
 
