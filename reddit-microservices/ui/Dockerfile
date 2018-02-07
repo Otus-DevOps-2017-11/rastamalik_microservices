@@ -13,6 +13,7 @@ RUN apk update && apk add --no-cache \
     ruby \
     ruby-dev \
     ruby-bigdecimal \
+    ruby-json \
     build-base\
     libssl1.0 \
     libc6-compat
