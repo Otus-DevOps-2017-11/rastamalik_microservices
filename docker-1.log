@@ -1,9 +1,0 @@
-REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE
-rastamalik/ubuntu-tmp-file   latest              3075516a151a        4 minutes ago       112MB
-ubuntu                       16.04               0458a4468cbc        3 days ago          112MB
-hello-world                  latest              f2a91732366c        2 months ago        1.85kB
-
-docker inspect <u_container_id> - выводит описание окружения контейнера ( состояние контейнера, 
-метаданные контейнера (сетевые настройки, volume и т.д.), информация о драйверах).
-
-docker inspect <u_image_id> - выводит только описание образа.
