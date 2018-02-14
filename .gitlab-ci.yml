@@ -8,7 +8,7 @@ build_job:
     - echo 'Building'
 test_unit_job: 
   stage: test
-   script: 
+  script: 
     - echo 'Testing 1'
 test_integration_job: 
   stage: test
