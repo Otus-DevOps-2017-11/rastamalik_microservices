@@ -12,8 +12,8 @@ RUN mkdir -p /usr/local/etc \
 RUN apk update && apk add --no-cache \
     ruby \
     ruby-dev \
-    ruby-json \
     ruby-bigdecimal \
+    ruby-json \
     build-base\
     libssl1.0 \
     libc6-compat
