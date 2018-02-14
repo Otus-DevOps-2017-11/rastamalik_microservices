@@ -4,6 +4,7 @@ stages:
   - build
   - test
   - deploy
+  - review
 
 variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
