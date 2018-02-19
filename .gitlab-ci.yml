@@ -31,8 +31,6 @@ branch review:
   stage: deploy
   script: 
     - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
-    - apk add --update py-pip
-    - pip install docker-compose
     - docker-compose -f docker-compose.yml up
     - docker-compose ps
      
