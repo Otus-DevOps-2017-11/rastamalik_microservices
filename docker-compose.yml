@@ -2,13 +2,11 @@ version: '2'
 services:
 
  gitlab-runner:
-   container_name: gitlab-runner2
-   image: gitlab/gitlab-runner2:latest
+   container_name: gitlab-runner
+   image: gitlab/gitlab-runner:latest
    volumes:
-     - /srv/gitlab-runner2/data:/home/gitlab_ci_multi_runner/data
-     - /srv/gitlab-runner2/config:/etc/gitlab-runner2
+     - /srv/gitlab-runner/data:/home/gitlab_ci_multi_runner/data
+     - /srv/gitlab-runner/config:/etc/gitlab-runner
      - /var/run/docker.sock:/var/run/docker.sock:rw
-   environment:
-     - CI_SERVER_URL=http://git.labs.lc:10080/ci
-   restart: always
+    restart: always
    
