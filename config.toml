@@ -1,24 +1,15 @@
-[[runners]]
-  name = "My Runner"
-  url = "http://35.198.178.20/"
-  token = "YNs-8PpqRqysugFGsCKS"
-  executor = "docker"
-  [runners.docker]
-    wait_for_services_timeout = 60
+concurrent = 20
 
-    tls_verify = false
-    image = "ruby:2.1"
-    
-    privileged = false
-    disable_cache = false
-     volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
-  [runners.cache]
-    Insecure = false
+[[runners]]
+executor = "docker+machine"
+limit = 20
+[runners.docker]
+  image = "ruby:2.1"
     [runners.machine]
     IdleCount = 0
     IdleTime = 1800
     MachineDriver = "google"
-    MachineName = "docker-host"
+    MachineName = ""auto-scale-runners-%s.my.domain.com""
     MachineOptions = [
         "google-access-key=<access key>",
         "google-secret-key=<secret key>",
