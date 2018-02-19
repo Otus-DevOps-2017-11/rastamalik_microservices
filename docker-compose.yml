@@ -2,7 +2,7 @@ version: '2'
 services:
 
    gitlab-runner:
-     container_name: gitlab-runner2
+     container_name: gitlab-runner3
      image: gitlab/gitlab-runner:latest
      volumes:
      - /srv/gitlab-runner2/data:/home/gitlab_ci_multi_runner/data
