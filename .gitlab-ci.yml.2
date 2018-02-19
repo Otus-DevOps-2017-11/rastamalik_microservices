@@ -1,0 +1,88 @@
+image: docker:latest
+stages:
+  - reddit_build
+  - build
+  - test
+  - deploy
+  - review
+  - stage
+  - production
+  - server
+  - cleanup
+  
+ 
+
+
+variables:
+  DATABASE_URL: 'mongodb://mongo/user_posts'
+  
+
+
+
+before_script:
+- docker info
+
+build:
+  stage: build
+  
+  script:
+  - docker build -t my-docker-image .
+     
+
+
+    
+test_unit_job:
+  stage: test
+  services:
+    - mongo:latest
+  script:
+    - cd reddit
+    - bundle install
+    - ruby simpletest.rb
+test_integration_job:
+  stage: test
+  script:
+    - echo 'Testing 2'
+deploy_dev_job:
+  stage: review
+  script:
+    - echo 'Deploy'
+  environment:
+    name: dev
+    url: http://dev.example.com
+
+branch server:
+   stage: server
+  script: 
+    -  docker run my-docker-image 
+    environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    url: http://$CI_ENVIRONMENT_SLUG.example
+
+cleanup:
+  stage: cleanup
+  script:
+    - git branch -d $CI_COMMIT_REF_NAME
+  when: manual 
+        
+  
+  
+staging:
+  stage: stage
+  when: manual
+  script:
+    - echo 'Deploy'
+  environment:
+    name: stage
+    url: https://beta.example.com
+production:
+  stage: production
+  when: manual
+  script:
+    - echo 'Deploy'
+  environment:
+    name: production
+    url: https://example.com  
+
+  
+    

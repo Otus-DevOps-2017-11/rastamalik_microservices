@@ -17,14 +17,9 @@ before_script:
   - bundle install
 
 build_job:
-  image: docker:latest
   stage: build
   script:
     - echo 'Building'
-    - docker build -t reddit:latest .
-
-
-
 test_unit_job:
   stage: test
   services:
@@ -42,27 +37,13 @@ deploy_dev_job:
   environment:
     name: dev
     url: http://dev.example.com
-
 branch review:
-  image: ubuntu:latest
   stage: review
-  script: 
-    - echo "Deploy to $CI_ENVIRONMENT_SLUG"
-    - apt-get update
-    - apt-get install apt-transport-https ca-certificates curl software-propeties-common
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add -
-    - add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable"
-    - apt-get update
-    - apt-get install docker-ce
-    - docker run reddit
-  
-  
+  script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
     on_stop: stop_branch
     url: http://$CI_ENVIRONMENT_SLUG.example
-
-
 stop_branch:
   script: echo Delete My App
   when: manual

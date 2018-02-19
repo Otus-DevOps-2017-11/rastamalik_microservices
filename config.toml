@@ -1,0 +1,16 @@
+[[runners]]
+  name = "My Runner"
+  url = "http://35.198.178.20/"
+  token = "YNs-8PpqRqysugFGsCKS"
+  executor = "docker"
+  [runners.docker]
+    wait_for_services_timeout = 60
+
+    tls_verify = false
+    image = "docker:latest"
+    
+    privileged = false
+    disable_cache = false
+     volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
+  [runners.cache]
+    Insecure = false
