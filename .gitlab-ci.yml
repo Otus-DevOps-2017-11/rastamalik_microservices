@@ -31,8 +31,8 @@ branch review:
   stage: deploy
   script: 
     - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
-    - sudo docker-compose -f docker-compose.yml up
-    - sudo docker-compose ps
+    - docker-compose -f docker-compose.yml up
+    - docker-compose ps
      
   
   
