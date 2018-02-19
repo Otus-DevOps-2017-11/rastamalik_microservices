@@ -11,7 +11,4 @@ services:
    environment:
      - CI_SERVER_URL=http://git.labs.lc:10080/ci
    restart: always
-   dns: 8.8.8.8
-
-networks:
-  mynet:
+   
