@@ -3,8 +3,8 @@ version: '2'
 services:
     sshd_centos7:
         build: 
-            context: ./centos7
-        image: vietdien2005/ssh_centos7:latest
+            
+        image: docker:latest
         ports:
             - "222:22"
        
