@@ -26,7 +26,7 @@ build_job:
 
 
 branch review:
-  image: alpine:latest
+  image: docker:latest
   
   stage: deploy
   script: 
