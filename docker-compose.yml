@@ -1,3 +1,6 @@
+version: '2'
+services:
+
  gitlab-runner:
    container_name: gitlab-runner
    image: gitlab/gitlab-runner:latest
