@@ -26,7 +26,7 @@ build_job:
 
 
 branch review:
-  image: ubuntu:latest
+  image: alpine:latest
   
   stage: deploy
   script: 
