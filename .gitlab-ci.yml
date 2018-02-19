@@ -27,8 +27,7 @@ build_job:
 
 branch review:
   image: docker:latest
-  services:
-    - dicker:dind
+  
   stage: deploy
   script: 
     - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
