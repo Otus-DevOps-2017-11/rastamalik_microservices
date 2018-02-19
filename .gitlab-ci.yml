@@ -27,10 +27,13 @@ build_job:
 
 branch review:
   image: docker:latest
-  stage: review
+  services:
+    - dicker:dind
+  stage: deploy
   script: 
     - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
-    - docker-machine ls 
+    - apk add --update py-pip
+    - pip install dcoker-compose
      
   
   
