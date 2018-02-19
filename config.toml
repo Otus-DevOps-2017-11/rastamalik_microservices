@@ -7,10 +7,22 @@
     wait_for_services_timeout = 60
 
     tls_verify = false
-    image = "docker:latest"
+    image = "ruby:2.1"
     
     privileged = false
     disable_cache = false
      volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
   [runners.cache]
     Insecure = false
+    [runners.machine]
+    IdleCount = 0
+    IdleTime = 1800
+    MachineDriver = "google"
+    MachineName = "docker-host"
+    MachineOptions = [
+        "google-access-key=<access key>",
+        "google-secret-key=<secret key>",
+        "google-region=europe-west-1-b",
+        "google-machine-type=g1-small"
+    ]
+
