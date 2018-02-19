@@ -1,16 +1,14 @@
-version: '2'
-services:
-    docker-ssh-lamp:
-        build: .
-        hostname: docker-ssh-lamp
-        image: docker-ssh-lamp
-        volumes:
-          - ./app:/app
-          - ./mysql:/var/lib/mysql
-          - ./var_log:/var/log
-        ports:
-          - "2080:80" # Both 2080 and 8000 port are using apache
-          - "2022:22"
-          - "2036:3306"
-        container_name: "docker-ssh-lamp"
-entrypoint: /app/docker_start.sh
+ gitlab-runner:
+   container_name: gitlab-runner
+   image: gitlab/gitlab-runner:latest
+   volumes:
+     - /srv/gitlab-runner/data:/home/gitlab_ci_multi_runner/data
+     - /srv/gitlab-runner/config:/etc/gitlab-runner
+     - /var/run/docker.sock:/var/run/docker.sock:rw
+   environment:
+     - CI_SERVER_URL=http://git.labs.lc:10080/ci
+   restart: always
+   dns: 192.168.0.1
+
+networks:
+  mynet:
