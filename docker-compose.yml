@@ -3,7 +3,7 @@ services:
 
 gitlab-runner:
 container_name: gitlab-runner
-   image: gitlab/gitlab-runner:latest
+image: gitlab/gitlab-runner:latest
    volumes:
      - /srv/gitlab-runner/data:/home/gitlab_ci_multi_runner/data
      - /srv/gitlab-runner/config:/etc/gitlab-runner
