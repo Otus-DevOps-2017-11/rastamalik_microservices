@@ -3,7 +3,7 @@ variable service_account_email {
 }
 
 variable crendetials_file {
-  description = "crendetials_file "
+  description = "crendetials_file"
 }
 
 
