@@ -1,5 +1,249 @@
 # rastamalik_microservices
 
+## Homework-20
+1. Создадим новый проект **example2**, добавим новый **remote**:
+```
+ git checkout -b docker-7
+ git remote add gitlab2 http://<your-vm-ip>/homework/example2.git 
+ git push gitlab2 docker-7
+```
+2. Изменим пайплайн таким образом, чтобы **job deploy** стал определением окружения **dev**, на которое условно будет выкатываться каждое изменение в коде проекта.
+3. Изменим **.gitlab-ci.yml**:
+```
+image: ruby:2.4.2
+
+stages:
+  - build
+  - test
+  - deploy
+  - review
+  - stage
+  - production
+
+
+variables:
+  DATABASE_URL: 'mongodb://mongo/user_posts'
+
+before_script:
+  - cd reddit
+  - bundle install
+
+build_job:
+  stage: build
+  script:
+    - echo 'Building'
+test_unit_job:
+  stage: test
+  services:
+    - mongo:latest
+  script:
+    - ruby simpletest.rb
+test_integration_job:
+  stage: test
+  script:
+    - echo 'Testing 2'
+deploy_dev_job:
+  stage: review
+  script:
+    - echo 'Deploy'
+  environment:
+    name: dev
+    url: http://dev.example.com
+branch review:
+  stage: review
+  script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
+  environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    on_stop: stop_branch
+    url: http://$CI_ENVIRONMENT_SLUG.example
+
+  only:
+    - branches
+  except:
+    - master
+
+staging:
+  stage: stage
+  when: manual
+  only:
+    - /^\d+\.\d+.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: stage
+    url: https://beta.example.com
+
+production:
+  stage: production
+  when: manual
+  only:
+      - /^\d+\.\d+.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: production
+    url: https://example.com
+```    
+
+4. На странице окружений должны появиться окружения **staging и production**.
+5. Условия и ограничения, добавим в описание pipeline директиву, которая не позволит нам выкатить на staging и зкщвгсешщт код, не помеченный с помощью тэга в git.
+```
+staging:
+  stage: stage
+  when: manual
+  only:
+    - /^\d+\.\d+.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: stage
+    url: https://beta.example.com
+
+production:
+  stage: production
+  when: manual
+  only:
+      - /^\d+\.\d+.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: production
+    url: https://example.com
+```
+Измеение, помеченное тэгом в git запустит полный пайплайн
+```
+git commit -a -m ‘#4 add logout button to profile page’
+git tag 2.4.10
+git push gitlab2 docker-7 --tags
+```
+6.Динамические окружения, добавленный ниже **job** определяет динамическое окружение для каждой ветки в репозитории, кроме ветки master:
+```
+branch review:
+  stage: review
+  script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
+  environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    on_stop: stop_branch
+    url: http://$CI_ENVIRONMENT_SLUG.example
+
+  only:
+    - branches
+  except:
+    - master
+    ```
+  
+
+
+
+
+## Homework-19
+1. Создаем виртуальную машину на Google Cloud **gitlab-ci**.
+2. На созданной машине установим **Docker**.
+3. На новом сервере создадим директории и поготовим **docker-compose.yml**.
+```
+ mkdir -p /srv/gitlab/config /srv/gitlab/data /srv/gitlab/logs
+ cd /srv/gitlab/
+ touch docker-compose.yml
+```
+```
+docker-compose.yml
+---
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.example.com'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://<YOUR-VM-IP>'
+  ports:
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab'
+    - '/srv/gitlab/logs:/var/log/gitlab'
+- '/srv/gitlab/data:/var/opt/gitlab'
+```
+4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
+```
+git checkout -b docker-6
+git remote add gitlab 
+http://<your-vm-ip>/homework/example.git 
+git push gitlab docker-6
+```
+5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
+```
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - echo 'Building'
+
+test_unit_job:
+  stage: test
+  script:
+    - echo 'Testing 1'
+
+test_integration_job:
+  stage: test
+  script:
+    - echo 'Testing 2'
+
+deploy_job:
+  stage: deploy
+  script:
+- echo 'Deploy'
+```
+
+6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
+```
+docker run -d --name gitlab-runner --restart always \ 
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \ 
+-v /var/run/docker.sock:/var/run/docker.sock \ 
+gitlab/gitlab-runner:latest 
+```
+Зарегистрируем **runner** командой:
+```
+docker exec -it gitlab-runner gitlab-runner register
+```
+7. Добавим исходный код reddit в репозиторий:
+```
+git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
+git add reddit / 
+git commit -m “Add reddit app” 
+git push gitlab  docker-6
+```
+8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
+```
+require_relative './app'
+require 'test/unit'
+require 'rack/test'
+
+set :environment, :test
+
+class MyAppTest < Test::Unit::TestCase
+  include Rack::Test::Methods
+
+  def app
+    Sinatra::Application
+  end
+
+  def test_get_request
+    get '/'
+    assert last_response.ok?
+  end
+end
+```
+9. Добавим библиотеку для тестирования в **reddit/Gemfile**, добавим ``` gem 'rack-test' ```.
+
+
+
+
+
 ## Homework 16
 1. Создадим директорию **docker-monolith** и перенесем туда файлы с прошлых ДЗ.
 2. Скачаем reddit-microservice.zip и распакуем его, удали архив.
