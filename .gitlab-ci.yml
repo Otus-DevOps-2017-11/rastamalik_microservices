@@ -30,6 +30,8 @@ branch review:
   script: 
     - echo "Deploy" 
     - cd terraform
+    - pwd
+    - terraform init
     - terraform --version
     - terraform apply -auto-approve=false -var-file=terraform.tfvars
      
