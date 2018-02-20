@@ -1,7 +1,6 @@
 provider "google" {
   version = "1.4.0"
-  service_account_email = "${var.service_account_email}"
-  credentials_file = "${var.credentials_file}"
+  
   project = "${var.project}"
   region  = "${var.region}"
 
@@ -9,6 +8,8 @@ provider "google" {
 
 
 resource "google_compute_instance" "app" {
+  service_account_email = "${var.service_account_email}"
+  credentials_file = "${var.credentials_file}"    
   name         = "reddit-app"
   machine_type = "g1-small"
   zone         = "${var.zone}"
