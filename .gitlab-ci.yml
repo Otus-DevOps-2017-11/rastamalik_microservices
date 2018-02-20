@@ -2,6 +2,7 @@ image: ruby:2.4.2
 
 stages:
   - deploy
+  - build
   - review
   - stage
   - production
