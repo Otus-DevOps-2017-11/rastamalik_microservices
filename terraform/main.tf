@@ -5,11 +5,14 @@ provider "google" {
   region  = "${var.region}"
 
 }
-
+resource "google_service_account_key" "app" {
+  service_account_id = "${var.service_account_email}"
+  pgp_key = "keybase:keybaseusername"
+  public_key_type = "${var.credentials_file}" 
+}
 
 resource "google_compute_instance" "app" {
-  service_account_email = "${var.service_account_email}"
-  credentials_file = "${var.credentials_file}"    
+     
   name         = "reddit-app"
   machine_type = "g1-small"
   zone         = "${var.zone}"
