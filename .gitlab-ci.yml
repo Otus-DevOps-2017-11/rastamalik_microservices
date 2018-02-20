@@ -31,7 +31,7 @@ branch review:
     - echo "Deploy" 
     - cd terraform
     - terraform --version
-    - terraform apply -auto-approve=false
+    - terraform apply -auto-approve=false -var-file=terraform.tfvars
      
  
  
