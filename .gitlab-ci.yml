@@ -26,15 +26,12 @@ build_job:
 
 
 branch review:
-  image: docker:latest
-  
+  image: jonatanblue/gitlab-ci-terraform:latest
   stage: deploy
   script: 
     - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
-    - docker-compose -f docker-compose.yml up
-    - docker-compose ps
+    - terraform --version
      
-  
   
   environment:
     name: branch/$CI_COMMIT_REF_NAME
