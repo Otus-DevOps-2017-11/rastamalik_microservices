@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+    sshd_centos7:
+        build: 
+            
+        image: docker:latest
+        ports:
+            - "222:22"
+       

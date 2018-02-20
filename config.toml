@@ -1,16 +1,47 @@
-[[runners]]
-  name = "My Runner"
-  url = "http://35.198.178.20/"
-  token = "YNs-8PpqRqysugFGsCKS"
-  executor = "docker"
-  [runners.docker]
-    wait_for_services_timeout = 60
 
-    tls_verify = false
-    image = "docker:latest"
-    
+concurrent = 4
+
+[[runners]]
+  name = "ruby-2.1"
+  url = "http://35.198.178.20/"
+  token = "Ld3-WUGE1Rzttsc4xkqa"
+  limit = 2
+  executor = "shell"
+  builds_dir = ""
+  shell = "bash"
+
+[[runners]]
+  name = "ruby-2.1-docker"
+  url = "http://35.198.178.20/"
+  token = "Ld3-WUGE1Rzttsc4xkqa"
+  limit = 0
+  executor = "docker"
+  builds_dir = ""
+  [runners.docker]
+    host = ""
+    image = "ruby:2.1"
     privileged = false
     disable_cache = false
-     volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
-  [runners.cache]
-    Insecure = false
+    cache_dir = ""
+
+[[runners]]
+  name = "ruby-2.1-docker-ssh"
+  url = "http://35.198.178.20/"
+  token = "Ld3-WUGE1Rzttsc4xkqa"
+  limit = 0
+  executor = "docker-ssh"
+  builds_dir = ""
+  [runners.docker]
+    host = ""
+    image = "ubuntu-upstart:14.04"
+    privileged = false
+    disable_cache = false
+    cache_dir = ""
+    [runners.docker.sysctls]
+      "net.ipv4.ip_forward" = "1"
+  [runners.ssh]
+    port = "22"
+    user = "root"
+    password = "docker.io"
+
+

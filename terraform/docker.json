@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "docker-193613",
+  "private_key_id": "f334519323e7f68ba78f643125fe4fd0058c81b9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCfCYwPO5oT6sP9\nqcmvKCcEROBIpG0HSgZ9GvUpC225ZRu+yTsClhNH9jgTrEEMWfILAzARE0Ls8ypX\nITcG/z4LEd0UA5ooafhQZc2lf8GULYP$
+  "client_email": "228320959510-compute@developer.gserviceaccount.com",
+  "client_id": "113597538993560242724",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/228320959510-compute%40developer.gserviceaccount.com"
+}

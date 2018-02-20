@@ -1,9 +1,8 @@
 image: ruby:2.4.2
 
 stages:
-  - build
-  - test
   - deploy
+  - build
   - review
   - stage
   - production
@@ -12,9 +11,7 @@ stages:
 variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
 
-before_script:
-  - cd reddit
-  - bundle install
+
 
 build_job:
   image: docker:latest
@@ -25,55 +22,25 @@ build_job:
 
 
 
-test_unit_job:
-  stage: test
-  services:
-    - mongo:latest
-  script:
-    - ruby simpletest.rb
-test_integration_job:
-  stage: test
-  script:
-    - echo 'Testing 2'
-deploy_dev_job:
-  stage: review
-  script:
-    - echo 'Deploy'
-  environment:
-    name: dev
-    url: http://dev.example.com
+
 
 branch review:
-  image: ubuntu:latest
-  stage: review
+  image: jonatanblue/gitlab-ci-terraform:latest
+  stage: deploy
   script: 
-    - echo "Deploy to $CI_ENVIRONMENT_SLUG"
-    - apt-get update
-    - apt-get install apt-transport-https ca-certificates curl software-propeties-common
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add -
-    - add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable"
-    - apt-get update
-    - apt-get install docker-ce
-    - docker run reddit
-  
-  
-  environment:
-    name: branch/$CI_COMMIT_REF_NAME
-    on_stop: stop_branch
-    url: http://$CI_ENVIRONMENT_SLUG.example
+    - echo "Deploy" 
+    - cd terraform
+    - pwd
+    - terraform init
+    - terraform --version
+    - terraform plan
+    - terraform apply
+     
+ 
+ 
 
 
-stop_branch:
-  script: echo Delete My App
-  when: manual
-  environment:
-    name: branch/$CI_COMMIT_REF_NAME
-    action: stop
-    
-  only:
-    - branches
-  except:
-    - master
+ 
   
 staging:
   stage: stage
