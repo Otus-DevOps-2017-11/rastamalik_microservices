@@ -37,4 +37,5 @@ resource "google_compute_instance" "app" {
     agent       = false
     private_key = "${file(var.private_key)}"
   }
+}
 
