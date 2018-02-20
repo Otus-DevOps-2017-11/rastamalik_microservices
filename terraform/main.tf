@@ -1,5 +1,7 @@
 provider "google" {
   version = "1.4.0"
+  service_account_email = "${var.service_account_email}"
+  credentials_file = "${var.credentials_file}"
   project = "${var.project}"
   region  = "${var.region}"
 
