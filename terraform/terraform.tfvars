@@ -1,3 +1,6 @@
+service_account_email = "228320959510-compute@developer.gserviceaccount.com"
+credentials_file = "doker.json"
+
 zone = "europe-west1-b"
 
 project = "docker-193613"
