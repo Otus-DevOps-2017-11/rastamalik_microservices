@@ -34,7 +34,7 @@ branch review:
     - terraform init
     - terraform --version
     - terraform plan
-    - terraform apply -auto-approve=false 
+    - terraform apply -auto-approve=false -y
      
  
  
