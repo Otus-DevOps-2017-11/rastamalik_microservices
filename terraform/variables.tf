@@ -2,7 +2,7 @@ variable service_account_email {
   description = "email"
 }
 
-variable crendetials_file {
+variable credentials_file {
   description = "file"
 }
 
