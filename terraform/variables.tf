@@ -1,9 +1,9 @@
 variable service_account_email {
-  description = "service_account_email"
+  description = "email"
 }
 
 variable crendetials_file {
-  description = "crendetials_file"
+  description = "file"
 }
 
 
