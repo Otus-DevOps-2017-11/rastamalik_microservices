@@ -1,7 +1,6 @@
 image: ruby:2.4.2
 
 stages:
-  - build
   - deploy
   - review
   - stage
@@ -33,6 +32,7 @@ branch review:
     - pwd
     - terraform init
     - terraform --version
+    - terraform plan
     - terraform apply -auto-approve=false 
      
  
