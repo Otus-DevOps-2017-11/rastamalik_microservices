@@ -29,7 +29,9 @@ branch review:
   stage: deploy
   script: 
     - echo "Deploy" 
+    - cd terraform
     - terraform --version
+    - terraform apply -auto-approve=false
      
  
  
