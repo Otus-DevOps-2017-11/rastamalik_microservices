@@ -2,11 +2,11 @@ zone = "europe-west1-b"
 
 project = "docker-193613"
 
-public_key_path = "~/.ssh/appuser.pub"
+public_key_path = "appuser.pub"
 
 disk_image = "reddit-base"
 
-private_key = "~/.ssh/appuser"
+private_key = "appuser"
 
 ssh_users = "appuser"
 
