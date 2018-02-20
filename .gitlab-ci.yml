@@ -38,17 +38,8 @@ branch review:
     url: http://$CI_ENVIRONMENT_SLUG.example
 
 
-stop_branch:
-  script: echo Delete My App
-  when: manual
-  environment:
-    name: branch/$CI_COMMIT_REF_NAME
-    action: stop
-    
-  only:
-    - branches
-  except:
-    - master
+
+ 
   
 staging:
   stage: stage
