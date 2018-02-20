@@ -28,15 +28,11 @@ branch review:
   image: jonatanblue/gitlab-ci-terraform:latest
   stage: deploy
   script: 
-    - echo "Deploy to $CI_ENVIRONMENT_SLUG" 
+    - echo "Deploy" 
     - terraform --version
      
-  
-  environment:
-    name: branch/$CI_COMMIT_REF_NAME
-    on_stop: stop_branch
-    url: http://$CI_ENVIRONMENT_SLUG.example
-
+ 
+ 
 
 
  
