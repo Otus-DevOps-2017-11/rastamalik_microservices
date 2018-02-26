@@ -108,7 +108,7 @@ mongodb-exporter:
        reddit:
 ```
 15. Пересоздадим сервисы, в списке endpoint-ов Prometheus- должен появится endpoint-mongod.
-
+16. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
 
 
