@@ -1,0 +1,74 @@
+version: '3.3'
+services:
+  post_db:
+    image: mongo:3.2
+    
+    volumes:
+      - post_db:/data/db
+    networks:
+      
+      reddit:
+           aliases:
+              - post_db
+              - comment_db
+  ui:
+    image: ${USERNAME}/ui:${VERSION}
+    ports:
+      - ${UI_PORTS}:${UI_PORTS}/tcp
+    networks:
+      reddit:
+
+  post:
+    image: ${USERNAME}/post:${VERSION}
+    networks:
+       reddit:
+            aliases:
+              - post
+  comment:
+    image: ${USERNAME}/comment:${VERSION}
+    networks:
+        reddit:
+            aliases:
+              - comment
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    networks:
+       reddit:
+          aliases:
+           - prometheus
+    ports:
+     - '9090:9090'
+  node-exporter:
+    image: prom/node-exporter
+    user: root
+    networks:
+       reddit:
+          al
+           - node-exporter 
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
+  mongodb-exporter:
+    image: mongodb_exporter
+    user: root
+    environment:
+    - MONGODB_URL="0.0.0.0:27017"
+    networks:
+       reddit:
+          aliases:
+           - mongodb-exporter 
+
+
+ 
+
+volumes:
+  post_db:
+
+networks:
+   reddit:
