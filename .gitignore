@@ -1,0 +1,19 @@
+gh-md-toc
+reddit-microservices/.env
+terraform-gitlab/terraform.tfvars
+terraform-gitlab/*lock.info
+terraform-gitlab/*tfstate
+terraform-gitlab/*backup
+terraform-gitlab/.terraform
+Docker-72e3439b3339.json
+env
+*.retry
+*build_info.txt
+build_info.txt
+prometheus/
+
+## python specific
+*.pyc
+
+
+
