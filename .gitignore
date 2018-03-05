@@ -1,0 +1,11 @@
+env
+*.retry
+*build_info.txt
+build_info.txt
+prometheus/
+mongodb_exporter/
+## python specific
+*.pyc
+
+
+
