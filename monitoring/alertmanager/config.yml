@@ -1,0 +1,8 @@
+global:
+  slack_api_url: 'https://hooks.slack.com/services/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'
+route:
+  receiver: 'slack-notifications'
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#prometheus'
