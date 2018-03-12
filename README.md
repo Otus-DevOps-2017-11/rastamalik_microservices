@@ -1,15 +1,6 @@
 # rastamalik_microservices
 
 
-## Homework-23
-1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
-2. Для наблюдения за состоянием наших Docker контейнеров используем **cAdvisor**.
-3. Для визуализации метрик из **Prometheus** используем **Grafana**.
-4. Создадим директорию **grafana/dashboards**, куда будем помещать шаблоны **.json** дашбордов.
-5. Создадим директорию **monitoring/alertmanager**, где создадаим **Dockerfile** и **config.yml** для отправки сообщений в **slack**.
-6. Запушем собранные нами образы на **DcokerHub**.
-7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
-8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
 ## Homework-21
 1. Создадим **docker-host** в GCE.
@@ -194,7 +185,11 @@ before_script:
   - cd reddit
   - bundle install
 
+<<<<<<< HEAD
 r
+=======
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 build_job:
   stage: build
   script:
@@ -214,7 +209,13 @@ test_unit_job:
     - mongo:latest
   script:
     - ruby simpletest.rb
+<<<<<<< HEAD
 r
+=======
+
+
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 test_integration_job:
   stage: test
   script:
@@ -222,6 +223,10 @@ test_integration_job:
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 deploy_job:
   stage: deploy
   script:
@@ -363,7 +368,14 @@ branch review:
     - branches
   except:
     - master
+<<<<<<< HEAD
     ```
+=======
+```
+
+
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 
 ## Homework-17
 1. Запустим контейнер с использованием none-драйвера. В качестве образа используем **joffotron/docker-net-tools**.
@@ -515,7 +527,15 @@ services:
 
 
 
+<<<<<<< HEAD
 r
+=======
+
+
+
+
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 ## Homework-19
 1. Создаем виртуальную машину на Google Cloud **gitlab-ci**.
 2. На созданной машине установим **Docker**.
@@ -626,6 +646,12 @@ end
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 363ba88f9e911dabc060226b8dee071bd41db9c2
 ## Homework 16
 1. Создадим директорию **docker-monolith** и перенесем туда файлы с прошлых ДЗ.
 2. Скачаем reddit-microservice.zip и распакуем его, удали архив.
