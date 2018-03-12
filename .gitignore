@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-env
-=======
 
 .env
->>>>>>> monitoring-2
 *.retry
 *build_info.txt
 
