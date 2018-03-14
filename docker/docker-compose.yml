@@ -2,16 +2,16 @@ version: '3.3'
 services:
   post_db:
     image: mongo:3.2
-    
+
     volumes:
       - post_db:/data/db
     networks:
-      
+
       reddit:
            aliases:
               - post_db
               - comment_db
-              
+
   ui:
     image: ${USERNAME}/ui:${VERSION}
     ports:
@@ -31,8 +31,8 @@ services:
         reddit:
             aliases:
               - comment
-  
- 
+
+
 
 volumes:
   post_db:
