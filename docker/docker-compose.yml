@@ -2,11 +2,11 @@ version: '3.3'
 services:
   post_db:
     image: mongo:3.2
-    
+
     volumes:
       - post_db:/data/db
     networks:
-      
+
       reddit:
            aliases:
               - post_db
@@ -45,7 +45,7 @@ services:
     networks:
        reddit:
           aliases:
-           - node-exporter 
+           - node-exporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -62,9 +62,6 @@ services:
       MONGODB_URL: "mongodb://comment_db:27017"
     networks:
        reddit:
-
-
- 
 
 volumes:
   post_db:
