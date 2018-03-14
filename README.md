@@ -105,7 +105,7 @@ static_configs:
 job_name: 'mongod'
     static_configs:
       - targets:
-         - 'mongodb-exporter:9001' 
+         - 'mongodb-exporter:9001'
 ```
 
 В **docker-compose.yml** добавил секцию:
@@ -156,23 +156,23 @@ web:
 4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
 ```
 git checkout -b docker-6
-git remote add gitlab 
-http://<your-vm-ip>/homework/example.git 
+git remote add gitlab
+http://<your-vm-ip>/homework/example.git
 git push gitlab docker-6
 ```
 5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
-```
 
 ## Homework-20
 1. Создадим новый проект **example2**, добавим новый **remote**:
 ```
  git checkout -b docker-7
  git remote add gitlab2 http://<your-vm-ip>/homework/example2.git
- git remote add gitlab2 http://<your-vm-ip>/homework/example2.git 
+ git remote add gitlab2 http://<your-vm-ip>/homework/example2.git
  git push gitlab2 docker-7
 ```
 2. Изменим пайплайн таким образом, чтобы **job deploy** стал определением окружения **dev**, на которое условно будет выкатываться каждое изменение в коде проекта.
 3. Изменим **.gitlab-ci.yml**:
+
 ```
 image: ruby:2.4.2
 
@@ -201,7 +201,6 @@ build_job:
     - echo 'Building'
 
 
-
 test_unit_job:
   stage: test
   script:
@@ -221,7 +220,6 @@ test_integration_job:
     - echo 'Testing 2'
 
 
-
 deploy_job:
   stage: deploy
   script:
@@ -230,10 +228,10 @@ deploy_job:
 
 6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
 ```
-docker run -d --name gitlab-runner --restart always \ 
--v /srv/gitlab-runner/config:/etc/gitlab-runner \ 
--v /var/run/docker.sock:/var/run/docker.sock \ 
-gitlab/gitlab-runner:latest 
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
 ```
 Зарегистрируем **runner** командой:
 ```
@@ -242,8 +240,8 @@ docker exec -it gitlab-runner gitlab-runner register
 7. Добавим исходный код reddit в репозиторий:
 ```
 git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
-git add reddit / 
-git commit -m “Add reddit app” 
+git add reddit /
+git commit -m “Add reddit app”
 git push gitlab  docker-6
 ```
 8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
@@ -268,7 +266,6 @@ class MyAppTest < Test::Unit::TestCase
 end
 ```
 9. Добавим библиотеку для тестирования в **reddit/Gemfile**, добавим ``` gem 'rack-test' ```.
-
 
 
 
@@ -316,7 +313,7 @@ production:
   environment:
     name: production
     url: https://example.com
-```    
+```
 
 4. На странице окружений должны появиться окружения **staging и production**.
 5. Условия и ограничения, добавим в описание pipeline директиву, которая не позволит нам выкатить на staging и зкщвгсешщт код, не помеченный с помощью тэга в git.
@@ -497,7 +494,7 @@ networks:
    back_net:
    ```
   Параметризованные параметры запишем в отдельный файл c расширением **.env**
-  
+
   8. Изменить базовое имя проекта можно с помощью опции **-p**
   ```
   docker-compose -p project1 up
@@ -509,7 +506,7 @@ services:
   ui:
     command: "puma --debug -w 2"
     ```
-    
+
 
 
 
@@ -547,8 +544,8 @@ web:
 4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
 ```
 git checkout -b docker-6
-git remote add gitlab 
-http://<your-vm-ip>/homework/example.git 
+git remote add gitlab
+http://<your-vm-ip>/homework/example.git
 git push gitlab docker-6
 ```
 5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
@@ -581,10 +578,10 @@ deploy_job:
 
 6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
 ```
-docker run -d --name gitlab-runner --restart always \ 
--v /srv/gitlab-runner/config:/etc/gitlab-runner \ 
--v /var/run/docker.sock:/var/run/docker.sock \ 
-gitlab/gitlab-runner:latest 
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
 ```
 Зарегистрируем **runner** командой:
 ```
@@ -593,8 +590,8 @@ docker exec -it gitlab-runner gitlab-runner register
 7. Добавим исходный код reddit в репозиторий:
 ```
 git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
-git add reddit / 
-git commit -m “Add reddit app” 
+git add reddit /
+git commit -m “Add reddit app”
 git push gitlab  docker-6
 ```
 8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
@@ -801,7 +798,7 @@ gcloud init
 5. Запускаем команду ```gcloud auth``` для работы с облаком  **docker-machine**.
 6. Создаем **docker-machine**:
 ```
-docker-machine create --driver google \                 
+docker-machine create --driver google \
 --google-project docker-193613 \
 --google-zone europe-west1-b \
 --google-machine-type g1-small \
@@ -837,7 +834,7 @@ docker run --name reddit -d --network=host reddit:latest
 ```
 10. Разрешим входящий  TCP-трафик на порт  9292 выполнив команду:
 ```
-gcloud compute firewall-rules create reddit-app \       
+gcloud compute firewall-rules create reddit-app \
 --allow tcp:9292 --priority=65534 \
 --target-tags=docker-machine \
 --description="Allow TCP connections" \
@@ -893,8 +890,5 @@ hello-world                  latest              f2a91732366c        2 months ag
 8. Удаляем все контейнеры
 ```
 docker rm $(docker ps -a -q) #
-docker rmi $(docker images -q)                                                                                                                       
+docker rmi $(docker images -q)
 ```
-
-
-

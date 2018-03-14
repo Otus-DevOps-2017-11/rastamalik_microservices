@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-env
-=======
-
 .env
->>>>>>> monitoring-2
 *.retry
-*build_info.txt
-
 build_info.txt
-prometheus/
-mongodb_exporter/
-## python specific
-*.pyc
-
