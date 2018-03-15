@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 services:
   post_db:
     image: mongo:3.2
@@ -11,14 +11,14 @@ services:
            aliases:
               - post_db
               - comment_db
-              - mongod_exporter
   ui:
     image: ${USERNAME}/ui:${VERSION}
     ports:
       - ${UI_PORTS}:${UI_PORTS}/tcp
     networks:
       reddit:
-
+          aliases:
+             - ui
   post:
     image: ${USERNAME}/post:${VERSION}
     networks:
