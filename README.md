@@ -105,7 +105,7 @@ static_configs:
 job_name: 'mongod'
     static_configs:
       - targets:
-         - 'mongodb-exporter:9001' 
+         - 'mongodb-exporter:9001'
 ```
 
 В **docker-compose.yml** добавил секцию:
@@ -119,60 +119,20 @@ mongodb-exporter:
        reddit:
 ```
 15. Пересоздадим сервисы, в списке endpoint-ов Prometheus- должен появится endpoint-mongod.
+16. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
-
-
-
-
-
-## Homework-19
-1. Создаем виртуальную машину на Google Cloud **gitlab-ci**.
-2. На созданной машине установим **Docker**.
-3. На новом сервере создадим директории и поготовим **docker-compose.yml**.
-```
- mkdir -p /srv/gitlab/config /srv/gitlab/data /srv/gitlab/logs
- cd /srv/gitlab/
- touch docker-compose.yml
-```
-```
-docker-compose.yml
----
-web:
-  image: 'gitlab/gitlab-ce:latest'
-  restart: always
-  hostname: 'gitlab.example.com'
-  environment:
-    GITLAB_OMNIBUS_CONFIG: |
-      external_url 'http://<YOUR-VM-IP>'
-  ports:
-    - '80:80'
-    - '443:443'
-    - '2222:22'
-  volumes:
-    - '/srv/gitlab/config:/etc/gitlab'
-    - '/srv/gitlab/logs:/var/log/gitlab'
-- '/srv/gitlab/data:/var/opt/gitlab'
-```
-4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
-```
-git checkout -b docker-6
-git remote add gitlab 
-http://<your-vm-ip>/homework/example.git 
-git push gitlab docker-6
-```
-5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
-```
 
 ## Homework-20
 1. Создадим новый проект **example2**, добавим новый **remote**:
 ```
  git checkout -b docker-7
  git remote add gitlab2 http://<your-vm-ip>/homework/example2.git
- git remote add gitlab2 http://<your-vm-ip>/homework/example2.git 
+ git remote add gitlab2 http://<your-vm-ip>/homework/example2.git
  git push gitlab2 docker-7
 ```
 2. Изменим пайплайн таким образом, чтобы **job deploy** стал определением окружения **dev**, на которое условно будет выкатываться каждое изменение в коде проекта.
 3. Изменим **.gitlab-ci.yml**:
+
 ```
 image: ruby:2.4.2
 
@@ -194,12 +154,10 @@ before_script:
   - cd reddit
   - bundle install
 
-r
 build_job:
   stage: build
   script:
     - echo 'Building'
-
 
 
 test_unit_job:
@@ -214,12 +172,10 @@ test_unit_job:
     - mongo:latest
   script:
     - ruby simpletest.rb
-r
 test_integration_job:
   stage: test
   script:
     - echo 'Testing 2'
-
 
 
 deploy_job:
@@ -230,10 +186,10 @@ deploy_job:
 
 6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
 ```
-docker run -d --name gitlab-runner --restart always \ 
--v /srv/gitlab-runner/config:/etc/gitlab-runner \ 
--v /var/run/docker.sock:/var/run/docker.sock \ 
-gitlab/gitlab-runner:latest 
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
 ```
 Зарегистрируем **runner** командой:
 ```
@@ -242,8 +198,8 @@ docker exec -it gitlab-runner gitlab-runner register
 7. Добавим исходный код reddit в репозиторий:
 ```
 git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
-git add reddit / 
-git commit -m “Add reddit app” 
+git add reddit /
+git commit -m “Add reddit app”
 git push gitlab  docker-6
 ```
 8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
@@ -268,13 +224,7 @@ class MyAppTest < Test::Unit::TestCase
 end
 ```
 9. Добавим библиотеку для тестирования в **reddit/Gemfile**, добавим ``` gem 'rack-test' ```.
-
-
-
-
-
-
-
+```
 deploy_dev_job:
   stage: review
   script:
@@ -316,7 +266,7 @@ production:
   environment:
     name: production
     url: https://example.com
-```    
+```
 
 4. На странице окружений должны появиться окружения **staging и production**.
 5. Условия и ограничения, добавим в описание pipeline директиву, которая не позволит нам выкатить на staging и зкщвгсешщт код, не помеченный с помощью тэга в git.
@@ -363,11 +313,118 @@ branch review:
     - branches
   except:
     - master
-    ```
+```
+
+
+## Homework-19
+1. Создаем виртуальную машину на Google Cloud **gitlab-ci**.
+2. На созданной машине установим **Docker**.
+3. На новом сервере создадим директории и поготовим **docker-compose.yml**.
+```
+ mkdir -p /srv/gitlab/config /srv/gitlab/data /srv/gitlab/logs
+ cd /srv/gitlab/
+ touch docker-compose.yml
+```
+```
+docker-compose.yml
+---
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.example.com'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://<YOUR-VM-IP>'
+  ports:
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab'
+    - '/srv/gitlab/logs:/var/log/gitlab'
+- '/srv/gitlab/data:/var/opt/gitlab'
+```
+4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
+```
+git checkout -b docker-6
+git remote add gitlab
+http://<your-vm-ip>/homework/example.git
+git push gitlab docker-6
+```
+5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
+```
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - echo 'Building'
+
+test_unit_job:
+  stage: test
+  script:
+    - echo 'Testing 1'
+
+test_integration_job:
+  stage: test
+  script:
+    - echo 'Testing 2'
+
+deploy_job:
+  stage: deploy
+  script:
+- echo 'Deploy'
+```
+
+6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
+```
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
+```
+Зарегистрируем **runner** командой:
+```
+docker exec -it gitlab-runner gitlab-runner register
+```
+7. Добавим исходный код reddit в репозиторий:
+```
+git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
+git add reddit /
+git commit -m “Add reddit app”
+git push gitlab  docker-6
+```
+8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
+```
+require_relative './app'
+require 'test/unit'
+require 'rack/test'
+
+set :environment, :test
+
+class MyAppTest < Test::Unit::TestCase
+  include Rack::Test::Methods
+
+  def app
+    Sinatra::Application
+  end
+
+  def test_get_request
+    get '/'
+    assert last_response.ok?
+  end
+end
+```
+9. Добавим библиотеку для тестирования в **reddit/Gemfile**, добавим ``` gem 'rack-test' ```.
+
 
 ## Homework-17
 1. Запустим контейнер с использованием none-драйвера. В качестве образа используем **joffotron/docker-net-tools**.
-```docker run --network none --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
+```
+docker run --network none --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
 ```
 2. Запустим контейнер в сетевом пространстве docker-хоста:
 ```
@@ -497,133 +554,18 @@ networks:
    back_net:
    ```
   Параметризованные параметры запишем в отдельный файл c расширением **.env**
-  
+
   8. Изменить базовое имя проекта можно с помощью опции **-p**
   ```
   docker-compose -p project1 up
   ```
   9. Создал файл **docker-compose.override.yml** при помощи которого запускаем **puma** для руби приложений в дебаг режиме с двумя воркерами (флаги --debug и -w 2):
-  ```
+```
   version: '3.3'
 services:
   ui:
     command: "puma --debug -w 2"
-    ```
-    
-
-
-
-
-
-r
-## Homework-19
-1. Создаем виртуальную машину на Google Cloud **gitlab-ci**.
-2. На созданной машине установим **Docker**.
-3. На новом сервере создадим директории и поготовим **docker-compose.yml**.
 ```
- mkdir -p /srv/gitlab/config /srv/gitlab/data /srv/gitlab/logs
- cd /srv/gitlab/
- touch docker-compose.yml
-```
-```
-docker-compose.yml
----
-web:
-  image: 'gitlab/gitlab-ce:latest'
-  restart: always
-  hostname: 'gitlab.example.com'
-  environment:
-    GITLAB_OMNIBUS_CONFIG: |
-      external_url 'http://<YOUR-VM-IP>'
-  ports:
-    - '80:80'
-    - '443:443'
-    - '2222:22'
-  volumes:
-    - '/srv/gitlab/config:/etc/gitlab'
-    - '/srv/gitlab/logs:/var/log/gitlab'
-- '/srv/gitlab/data:/var/opt/gitlab'
-```
-4. Настраиваем Gitlab CI, создаем новый проект **example**, и выполняем команды:
-```
-git checkout -b docker-6
-git remote add gitlab 
-http://<your-vm-ip>/homework/example.git 
-git push gitlab docker-6
-```
-5. Определяем Pipeline для проекта, в репозиторий добавим файл **.gitlab-ci.yml**
-```
-stages:
-  - build
-  - test
-  - deploy
-
-build_job:
-  stage: build
-  script:
-    - echo 'Building'
-
-test_unit_job:
-  stage: test
-  script:
-    - echo 'Testing 1'
-
-test_integration_job:
-  stage: test
-  script:
-    - echo 'Testing 2'
-
-deploy_job:
-  stage: deploy
-  script:
-- echo 'Deploy'
-```
-
-6. Для запуска **pipeline** создадим **runner**, на сервере **gitlab-ci** выполним команду:
-```
-docker run -d --name gitlab-runner --restart always \ 
--v /srv/gitlab-runner/config:/etc/gitlab-runner \ 
--v /var/run/docker.sock:/var/run/docker.sock \ 
-gitlab/gitlab-runner:latest 
-```
-Зарегистрируем **runner** командой:
-```
-docker exec -it gitlab-runner gitlab-runner register
-```
-7. Добавим исходный код reddit в репозиторий:
-```
-git clone https://github.com/express42/reddit.git  && rm -rf ./reddit/.git
-git add reddit / 
-git commit -m “Add reddit app” 
-git push gitlab  docker-6
-```
-8. Добавим тест для **reddit**, в папке **reddit** создадим файл **simpletest.rb**:
-```
-require_relative './app'
-require 'test/unit'
-require 'rack/test'
-
-set :environment, :test
-
-class MyAppTest < Test::Unit::TestCase
-  include Rack::Test::Methods
-
-  def app
-    Sinatra::Application
-  end
-
-  def test_get_request
-    get '/'
-    assert last_response.ok?
-  end
-end
-```
-9. Добавим библиотеку для тестирования в **reddit/Gemfile**, добавим ``` gem 'rack-test' ```.
-
-
-
-
-
 
 
 ## Homework 16
@@ -787,9 +729,6 @@ docker run -d --network=reddit -p 9292:9292 <your-dockerhub-login>/ui:2.0
 ```
 
 
-
-
-
 ## Homework-15
 1. Устанавливаем **docker-machine**.
 2. Создаем новый проект на **Google Cloud** названием **docker**.
@@ -801,7 +740,7 @@ gcloud init
 5. Запускаем команду ```gcloud auth``` для работы с облаком  **docker-machine**.
 6. Создаем **docker-machine**:
 ```
-docker-machine create --driver google \                 
+docker-machine create --driver google \
 --google-project docker-193613 \
 --google-zone europe-west1-b \
 --google-machine-type g1-small \
@@ -837,7 +776,7 @@ docker run --name reddit -d --network=host reddit:latest
 ```
 10. Разрешим входящий  TCP-трафик на порт  9292 выполнив команду:
 ```
-gcloud compute firewall-rules create reddit-app \       
+gcloud compute firewall-rules create reddit-app \
 --allow tcp:9292 --priority=65534 \
 --target-tags=docker-machine \
 --description="Allow TCP connections" \
@@ -849,8 +788,6 @@ gcloud compute firewall-rules create reddit-app \
 docker tag reddit:latest rastamalik/otus-reddit:1.0
 docker push rastamalik/otus-reddit:1.0
 ```
-
-
 
 
 ## Homework-14
@@ -893,8 +830,5 @@ hello-world                  latest              f2a91732366c        2 months ag
 8. Удаляем все контейнеры
 ```
 docker rm $(docker ps -a -q) #
-docker rmi $(docker images -q)                                                                                                                       
+docker rmi $(docker images -q)
 ```
-
-
-

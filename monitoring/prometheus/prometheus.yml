@@ -30,7 +30,7 @@ scrape_configs:
   - job_name: 'post'
     static_configs:
       - targets:
-        - 'post:5000'    
+        - 'post:5000'
   - job_name: 'node'
     static_configs:
       - targets:
