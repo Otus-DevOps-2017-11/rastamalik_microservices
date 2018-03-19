@@ -1,5 +1,278 @@
 # rastamalik_microservices
+## Homework-27
+1. Создаем машины **master-1** на GCE и по аналогии **woker-1** и **worker-2**.
+2. Строим **swarm cluster**
+```
+eval $(docker-machine env master-1)
+docker swarm init
+```
+3. Кластер создан и добавим к нему новые ноды
+```
+eval $(docker-machine env worker-1)
+docker swarm join --token <наш токен> <advertise адрес manager’a>:2377
+eval $(docker-machine env worker-2)
+docker swarm join --token <наш токен> <advertise адрес manager’a>:2377
+```
+4. Сервисы и их зависимости объединяем в **STACK** описываем в формате **docker-compose**
+5. Поднимаем **STACK**
+```
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DEV
+```
 
+6. Размещаем сервисы по нодам и деплоим
+```
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DE
+```
+7. Масштабируем сервисы:
+```
+services:
+  post:
+    image: ${USERNAME}/post:${POST_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  comment:
+    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  ui:
+    image: ${USERNAME}/ui:${UI_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - "${UI_PORT}:9292/tcp"
+    networks:
+      - front_net
+  ```
+8. Для задач монитроинга запустим **node_exporter**
+```
+node-exporter: 
+    image: prom/node-exporter:
+v0.15.0 
+deploy: 
+      mode: global 
+```
+9. Добавим в кластер **worker-3**. В контейнере запустиля только **node-exporter**, после увеличения реплик и деплоя, в контейнере поднялся сервис **Post**. При добавлении нового **workera** запустился сразу сервис с **mode: global**, после деплоя на нем запустился сервис с **mode: replicated**.
+10. Задание с **update_config**,**ресурсами**,и **политика перезапуска**:
+```
+version: '3.5'
+services:
+
+  mongo:
+    image: mongo:${MONGO_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.labels.reliability == high
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+
+  post:
+    image: ${USERNAME}/post:${POST_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 15
+        delay: 1s
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 300M
+      update_config:
+        delay: 10s
+        parallelism: 2
+        failure_action: rollback
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  comment:
+    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 15
+        delay: 1s
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 300M
+      update_config:
+        delay: 10s
+        parallelism: 2
+        failure_action: rollback
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+
+    networks:
+      - front_net
+      - back_net
+
+  ui:
+    image: ${USERNAME}/ui:${UI_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        delay: 3s
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 150M
+      replicas: 3
+      update_config:
+        delay: 5s
+        parallelism: 1
+        failure_action: pause
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - "${UI_PORT}:9292/tcp"
+    networks:
+      - front_net
+
+volumes:
+  mongo_data: {}
+
+networks:
+  back_net: {}
+  front_net: {}
+  ```
+11. Создал **docker-compose.monitoring.yml** для каждого сервиса добавил **mode: global**.
+
+
+## Homework-25
+1.Создаем новую ветку **logging-1**б где и будем выполнять ДЗ.
+2.Обновляеи код микросервисов в директории **/src**.
+3. Создадим **Docker host** **logging** в GCE.
+4. Создаем отдельный compose-файл для логирования **docker/docker-compose-logging.yml** 
+```
+version: '3'
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  fluentd:
+    build: ./fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+  elasticsearch:
+    image: elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana
+    ports:
+      - "8080:5601"
+   ```
+  5. Используем **fluentd** для агрегации и парсинга логов. В директории **docker** создадим директроию **fluentd**, а в ней создадим **Dockerfile** lля сборки и файл конфигурации **fluent.conf**.
+  6. Запустим сервисы и выполним команду для просмотров логов **post** ```docker-compose logs -f post```.
+  7. Отправим логи во **fluentd** и визуализируем их в **Kibana**.
+  8. Используем фильтры для для парсинга логов, приходящих от **post**, добавим их конфиг **fluentd**:
+  ```
+  <source>
+  @type forward
+  port 24224
+  bind 0.0.0.0
+</source>
+
+<filter service.post>
+  @type parser
+  format json
+  key_name log
+</filter>
+
+<filter service.ui>
+  @type parser
+  key_name log
+  format grok
+  grok_pattern %{RUBY_LOGGER}
+</filter>
+
+<filter service.ui>
+  @type parser
+  format grok
+  grok_pattern service=%{WORD:service} \| event=%{WORD:event} \| request_id=%{GREEDYDATA:request_id} \| message='%{GREEDYDATA:message}'
+  key_name message
+  reserve_data true
+</filter>
+
+<match *.**>
+  @type copy
+  <store>
+    @type elasticsearch
+    host elasticsearch
+    port 9200
+    logstash_format true
+    logstash_prefix fluentd
+    logstash_dateformat %Y%m%d
+    include_tag_key true
+    type_name access_log
+    tag_key @log_name
+    flush_interval 1s
+  </store>
+  <store>
+    @type stdout
+  </store>
+</match>
+```
+7. По аналогии с **post** сервисом определим для **ui** сервиса, добавим драйвер для логирования **fluentd** в compose-файл.
+8. Добавим в **docker-compose-logging.yml** сервис **Zipkin** для логирования распределенного трейсинга.
+
+
+
+## Homework-23
+1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
+2. Для наблюдения за состоянием наших Docker контейнеров используем **cAdvisor**.
+3. Для визуализации метрик из **Prometheus** используем **Grafana**.
+4. Создадим директорию **grafana/dashboards**, куда будем помещать шаблоны **.json** дашбордов.
+5. Создадим директорию **monitoring/alertmanager**, где создадаим **Dockerfile** и **config.yml** для отправки сообщений в **slack**.
+6. Запушем собранные нами образы на **DcokerHub**.
+7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
+8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
 ## Homework-21
 1. Создадим **docker-host** в GCE.
