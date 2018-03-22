@@ -11,6 +11,9 @@ services:
            aliases:
               - post_db
               - comment_db
+
+
+
   ui:
     image: ${USERNAME}/ui:${VERSION}
     environment:
@@ -55,12 +58,17 @@ services:
         reddit:
             aliases:
               - comment
+
   zipkin:
     image: openzipkin/zipkin
     networks:
       reddit:
     ports:
       - "9411:9411"
+
+
+
+
 
 volumes:
   post_db:

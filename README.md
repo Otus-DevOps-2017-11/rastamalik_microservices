@@ -97,6 +97,16 @@ services:
 7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
 8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
+## Homework-23
+1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
+2. Для наблюдения за состоянием наших Docker контейнеров используем **cAdvisor**.
+3. Для визуализации метрик из **Prometheus** используем **Grafana**.
+4. Создадим директорию **grafana/dashboards**, куда будем помещать шаблоны **.json** дашбордов.
+5. Создадим директорию **monitoring/alertmanager**, где создадаим **Dockerfile** и **config.yml** для отправки сообщений в **slack**.
+6. Запушем собранные нами образы на **DcokerHub**.
+7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
+8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
+
 ## Homework-21
 1. Создадим **docker-host** в GCE.
 2. Систему мониторинга Prometheus будем запускать внутри Docker контейнера.
@@ -258,7 +268,6 @@ test_unit_job:
     - mongo:latest
   script:
     - ruby simpletest.rb
-
 test_integration_job:
   stage: test
   script:
