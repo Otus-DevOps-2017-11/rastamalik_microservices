@@ -1,4 +1,6 @@
-version: '3.5'
+
+version: '3'
+
 services:
 
   mongo:
@@ -10,6 +12,7 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
+
       back_net:
         aliases:
           - post_db
@@ -88,6 +91,19 @@ services:
       - "${UI_PORT}:9292/tcp"
     networks:
       - front_net
+
+
+      reddit:
+           aliases:
+              - post_db
+              - comment_db
+
+
+
+
+
+
+
 
 volumes:
   mongo_data: {}
