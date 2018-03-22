@@ -1,5 +1,101 @@
 # rastamalik_microservices
+## Homework-25
+1.Создаем новую ветку **logging-1**б где и будем выполнять ДЗ.
+2.Обновляеи код микросервисов в директории **/src**.
+3. Создадим **Docker host** **logging** в GCE.
+4. Создаем отдельный compose-файл для логирования **docker/docker-compose-logging.yml**
+```
+version: '3'
 
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  fluentd:
+    build: ./fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+  elasticsearch:
+    image: elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana
+    ports:
+      - "8080:5601"
+   ```
+  5. Используем **fluentd** для агрегации и парсинга логов. В директории **docker** создадим директроию **fluentd**, а в ней создадим **Dockerfile** lля сборки и файл конфигурации **fluent.conf**.
+  6. Запустим сервисы и выполним команду для просмотров логов **post** ```docker-compose logs -f post```.
+  7. Отправим логи во **fluentd** и визуализируем их в **Kibana**.
+  8. Используем фильтры для для парсинга логов, приходящих от **post**, добавим их конфиг **fluentd**:
+  ```
+  <source>
+  @type forward
+  port 24224
+  bind 0.0.0.0
+</source>
+
+<filter service.post>
+  @type parser
+  format json
+  key_name log
+</filter>
+
+<filter service.ui>
+  @type parser
+  key_name log
+  format grok
+  grok_pattern %{RUBY_LOGGER}
+</filter>
+
+<filter service.ui>
+  @type parser
+  format grok
+  grok_pattern service=%{WORD:service} \| event=%{WORD:event} \| request_id=%{GREEDYDATA:request_id} \| message='%{GREEDYDATA:message}'
+  key_name message
+  reserve_data true
+</filter>
+
+<match *.**>
+  @type copy
+  <store>
+    @type elasticsearch
+    host elasticsearch
+    port 9200
+    logstash_format true
+    logstash_prefix fluentd
+    logstash_dateformat %Y%m%d
+    include_tag_key true
+    type_name access_log
+    tag_key @log_name
+    flush_interval 1s
+  </store>
+  <store>
+    @type stdout
+  </store>
+</match>
+```
+7. По аналогии с **post** сервисом определим для **ui** сервиса, добавим драйвер для логирования **fluentd** в compose-файл.
+8. Добавим в **docker-compose-logging.yml** сервис **Zipkin** для логирования распределенного трейсинга.
+
+
+
+## Homework-23
+1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
+2. Для наблюдения за состоянием наших Docker контейнеров используем **cAdvisor**.
+3. Для визуализации метрик из **Prometheus** используем **Grafana**.
+4. Создадим директорию **grafana/dashboards**, куда будем помещать шаблоны **.json** дашбордов.
+5. Создадим директорию **monitoring/alertmanager**, где создадаим **Dockerfile** и **config.yml** для отправки сообщений в **slack**.
+6. Запушем собранные нами образы на **DcokerHub**.
+7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
+8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
 
 ## Homework-23
 1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
