@@ -1,0 +1,64 @@
+---
+- name: Create Bootstrapping the etcd Cluster
+  hosts: controller
+
+  tasks:
+
+   - name: Download kube
+     become: true
+     chdir: /home/mozhaev
+     command:  wget -q --show-progress --https-only --timestamping "https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-apiserver"  "https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-controller-manager"  "https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-scheduler"  "https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl"
+     mode: present
+   - name: chmod
+     become: True
+     command: chmod +x  kube-apiserver kube-controller-manager kube-scheduler kubectl
+   - name: Move
+     become: True
+     command:  sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+   - name: Provision the Kubernetes Control Plane
+     become: true
+     copy:
+         src: template/kube.sh
+         dest: /home/mozhaev/kube.sh
+         mode: +x
+   - name: Remote command
+     become: true
+     chdir: /home/mozhaev
+     command:  /bin/sh /home/mozhaev/kube.sh --some-arguments 1234
+     mode: present
+
+
+
+   - name: reload systemd
+     become: true
+     command: systemctl daemon-reload
+   - name: enable kube-apiserver
+     become: true
+     systemd: name=kube-apiserver enabled=yes
+   - name: enable kube-controller-manager
+     become: true
+     systemd: name=kube-controller-manager enabled=yes
+   - name: enable kube-scheduler
+     become: true
+     systemd: name=kube-scheduler enabled=yes
+
+   - name: start kube-apiserver
+     become: true
+     systemd: name=kube-apiserver state=restarted
+   - name: start kube-controller-manager
+     become: true
+     systemd: name=kube-controller-manager state=restarted
+   - name: start kube-scheduler
+     become: true
+     systemd: name=kube-scheduler state=restarted
+   - name: RBAC for Kubelet Authorization
+     become: true
+     copy:
+         src: template/kub.sh
+         dest: /home/mozhaev/kub.sh
+         mode: +x
+   - name: Remote command
+     become: true
+     chdir: /home/mozhaev
+     command:  /bin/sh /home/mozhaev/kub.sh --some-arguments 1234
+     mode: present

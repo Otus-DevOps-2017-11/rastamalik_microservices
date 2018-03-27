@@ -1,0 +1,28 @@
+---
+- name: Create Bootstrapping the etcd Cluster
+  hosts: controller
+
+  tasks:
+
+   - name: Bootstrapping the etcd Cluster
+     become: true
+     copy:
+       src: template/etcd.sh
+       dest: /home/mozhaev/etcd.sh
+       mode: +x
+   - name: Remote command
+     become: true
+     chdir: /root
+     command:  /bin/sh /home/mozhaev/etcd.sh --some-arguments 1234
+     mode: present
+
+   - name: reload systemd
+     become: true
+     command: systemctl daemon-reload
+   - name: enable etcd
+     become: true
+     systemd: name=etcd enabled=yes
+
+   - name: restart etcd
+     become: true
+     systemd: name=etcd state=restarted
