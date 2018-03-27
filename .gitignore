@@ -1,3 +1,4 @@
 .env
 *.retry
 build_info.txt
+.json
