@@ -144,7 +144,7 @@ spec:
  
  16. Развернем **Kubernetes** в Google Cloud используя платформу **Google Kubernetes Engine**.
  
- 17. Ссылка на работующее приложение в **GKE** http://http://35.187.56.64:32092/
+ 17. Ссылка на работующее приложение в **GKE** http://35.187.56.64:32092/
 
 ## Homework-28
 1. Создал **deployment** **post**,**ui**,**comment**,**mongo**.
