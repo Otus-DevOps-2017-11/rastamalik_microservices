@@ -144,7 +144,7 @@ spec:
  
  16. Развернем **Kubernetes** в Google Cloud используя платформу **Google Kubernetes Engine**.
  
- 17. Скриншот работующего приложения в **GKE** ![Alt text](/rastamalik_microservices/kubernetes/kube/reddit.png?raw=true "Reddit")
+ 17. Скриншот работующего приложения в **GKE** ![Reddit](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-2/kubernetes/kube/reddit.png?raw=true "Optional Title")
 
 ## Homework-28
 1. Создал **deployment** **post**,**ui**,**comment**,**mongo**.
