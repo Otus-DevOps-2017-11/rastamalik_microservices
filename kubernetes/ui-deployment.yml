@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
       - image: rastamalik/ui
-        name: post
+        name: ui
