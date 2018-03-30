@@ -1,5 +1,5 @@
 USER_NAME ?= rastamalik
-PASSWORD ?= somepassword
+PASSWORD ?= password
 VERSION ?= latest
 DOCKER_PATH ?=  ~/rastamalik_microservices/src
 DOCKER_PROM ?= ~/rastamalik_microservices/monitoring/prometheus
