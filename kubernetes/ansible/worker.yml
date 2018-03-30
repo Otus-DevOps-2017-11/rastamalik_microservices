@@ -1,0 +1,65 @@
+---
+- name: Bootstrapping the Kubernetes Worker Nodes
+  hosts: worker
+
+  tasks:
+   - name: Install socat
+     become: True
+     command: sudo apt-get -y install socat
+   - name: Download kube
+     become: true
+     command: wget -q --show-progress --https-only --timestamping  https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz  https://github.com/containerd/cri-containerd/releases/download/v1.0.0-beta.1/cri-containerd-1.0.0-beta.1.linux-amd64.tar.gz   https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-proxy   https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubelet
+   - name: Create directories
+     become: True
+     command: sudo mkdir -p  /etc/cni/net.d  /opt/cni/bin  /var/lib/kubelet  /var/lib/kube-proxy  /var/lib/kubernetes  /var/run/kubernetes
+   - name: tar cri-containerd
+     become: True
+     command:  sudo tar -xvf cri-containerd-1.0.0-beta.1.linux-amd64.tar.gz -C /
+
+   - name: tar cni-plugins
+     become: True
+     command:  sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
+   - name: chmod
+     become: True
+     command:  chmod +x kubectl kube-proxy kubelet
+   - name: Move
+     become: True
+     command: sudo mv kubectl kube-proxy kubelet /usr/local/bin/
+   - name: Configure the Kubelet
+     become: true
+     copy:
+          src: template/worker.sh
+          dest: /root/worker.sh
+          mode: +x
+   - name: Remote command
+     become: true
+     chdir: /root
+     command:  /bin/sh /root/worker.sh --some-arguments 1234
+     mode: present
+   - name: reload systemd
+     become: true
+     command: systemctl daemon-reload
+   - name: enable containerd
+     become: true
+     systemd: name=containerd enabled=yes
+   - name: enable cri-containerd
+     become: true
+     systemd: name=cri-containerd enabled=yes
+   - name: enable kubelet
+     become: true
+     systemd: name=kubelet enabled=yes
+   - name: enable kube-proxy
+     become: true
+     systemd: name=kube-proxy enabled=yes
+   - name: start containerd
+     become: true
+     systemd: name=containerd state=started
+   - name: start cri-containerd
+     become: true
+     systemd: name=cri-containerd state=started
+   - name: start kubelet
+     become: true
+     systemd: name=kubelet state=started
+   - name: start kube-proxy
+     become: true
+     systemd: name=kube-proxy state=started
