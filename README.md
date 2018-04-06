@@ -1,5 +1,80 @@
 # rastamalik_microservices
-
+## Homework-30
+1. Настроим **ui-service.yml** в качестве **LoadBalancer** (внешнего облачного балансировщика) как единую точку входа в наши сервисы.
+2. Создадим **ingress** для сервиса **UI**:
+```
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ui
+spec:
+  backend:
+    serviceName: ui
+    servicePort: 80
+ ```
+ 3. Защитим наш сервис с помощью TLS, подготовим сертификат:
+ ```
+ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN= 
+ ```
+ и загрузим сертификат в кластер Kubernetes
+ ```
+ kubectl create secret tls ui-ingress --key tls.key --cert tls.crt -n dev
+ ```
+ 4. Настроим Ingress на прием только HTTPS траффика, **ui-ingress.yml**
+ ```
+ ---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ui
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+spec:
+  tls:
+  - secretName: ui-ingress
+  backend:
+    serviceName: ui
+    servicePort: 9292
+```
+5. Применим **NetworkPolicy** для ограничения трафика поступающего на **mongodb** отовсюду, кроме сервисов **post и comment**.
+6. Обновим **mongo-network-policy.yml** так, чтобы **post-сервис** дошед до базы данных.
+ ```
+ ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-db-traffic
+  labels:
+    app: reddit
+spec:
+  podSelector:
+    matchLabels:
+      app: reddit
+      component: mongo
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: reddit
+          component: comment
+          component: post
+ ```
+ 7. Подключаем **Volume** для хоанения данных базы в **mongo-deployment.yml** 
+ ```
+         volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        emptyDir: {}
+  ```
+  8.Для использования целого ресурса хранилища, общего для всего кластера, используем механизм **PersistentVolume**.
+  9. Для выделения приложению части такого ресурса нужно создать запрос на выдачу **PersistentVolumeClaim**.
+  
+  
 ## Homework-29
 1. Установка **kubectl**
 2. Установка **minikube**
