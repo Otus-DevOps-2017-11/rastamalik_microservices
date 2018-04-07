@@ -1,5 +1,449 @@
 # rastamalik_microservices
 
+## Homework-29
+1. Установка **kubectl**
+2. Установка **minikube**
+3. Запустим **minikube-cluster**.
+4. Сконфигурируем **kubectl**
+```
+1)Создать cluster:
+ kubectl config set-cluster ... cluster_name
+2)Создать данные пользователя  (credentials)
+ kubectl config set-credentials ... user_name
+3)Создать контекст
+ kubectl config set-context context_name --cluster=cluster_name --user=user_name
+4) Использовать контекст
+ kubectl config use-context context_name
+ ```
+5. Запустим приложение **ui-deployment**:
+```
+kubectl apply -f ui-deployment.yml
+```
+6. Пробросим сетевой порт POD-а на локальную машину:
+```
+kubectl get pods --selector component=ui
+kubectl port-forward <pod-name> 8080:9292
+```
+7. Запусти аналогично **post-deployment.yml**, **comment-deployment.yml** и **mongo-deployment.yml**, а также примонтируем стандартный **Volume** для хранения данных вне контейнера.
+```
+spec:
+      containers:
+      - image: mongo:3.2
+        name: mongo
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        emptyDir: {}
+ ```
+ 8. Для связи **ui** с **post** и **comment** создадим им по объекту **Service**, **post-service.yml**, **comment-service.yml**, **ui-service.yml** и **mongodb-service**.
+ 9. Проверяем приложение, пробрасываем порт на **ui pod**:
+ ```
+ kubectl port-forward <pod-name> 9292:9292
+ ```
+и заходим на http://localhost:9292
+
+10. Чтобы приложение работало нормально создадим **Ыукмшсу** для БД comment - **comment-mongodb-service.yml**:
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-db
+  labels:
+    app: reddit
+    component: mongo
+    comment-db: "true"
+spec:
+  ports:
+  - port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: reddit
+    component: mongo
+    comment-db: "true
+```
+11. Также обновим файл **deployment** для **mongodb**, чтобы новый **Service** смог найти нужный **Pod**:
+```
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo
+  labels:
+    app: reddit
+    component: mongo
+   comment-db: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reddit
+      component: mongo
+  template:
+    metadata:
+      name: mongo
+      labels:
+        app: reddit
+        component: mongo
+        comment-db: "true"
+   ```
+12. Аналогично сделаем для **post- сервиса**:
+```
+--
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-db
+  labels:
+    app: reddit
+    component: mongo
+    post-db: "true"
+spec:
+  ports:
+  - port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: reddit
+    component: mongo
+    post-db: "true"
+```
+13. Обеспечим доступ к **ui-сервису** снаружи, с помощью **NodePort и TargetPort**:
+```
+ui-service.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  labels:
+    app: reddit
+    component: ui
+spec:
+  type: NodePort
+  ports:
+  - nodePort: 32092
+    port: 9292
+    protocol: TCP
+    targetPort: 9292
+  selector:
+    app: reddit
+    component: ui
+```
+
+ 14. Проверим доступ с помощью ``` minikube service ui```
+ 
+ 15. Включим аддон **dashboard** в **minikube**:
+ ```
+ minikube addons enable dashboard
+ ```
+ и запустим в браузере: ``` minikube service kubernetes-dashboard -n kube-system ```
+ 
+ 16. Развернем **Kubernetes** в Google Cloud используя платформу **Google Kubernetes Engine**.
+ 
+ 17. Скриншот работующего приложения в **GKE** ![Reddit](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-2/kubernetes/kube/reddit2.png?raw=true "Optional Title")
+
+## Homework-28
+1. Создал **deployment** **post**,**ui**,**comment**,**mongo**.
+2. Создал папку **kubernetes**, куда и поместил **.yml** файлы.
+3. Создал **kubernetes-кластер** согласно пошаговой инструкции.
+4. Создал папку **kubernetes_the_hard_way** куда поместил все серитификаты и ключи.
+5. Запустил поды **post**,**ui**,**comment**,**mongo** c помощью команды 
+``` 
+kubectl apply -f <filename>
+```
+6. Проверил что поды запустились 
+``` 
+kubectl get pods --all-namespaces 
+```
+7.Задание со звездочкой.
+
+8.Создал папку **ansible** куда поместил основные плэйбуки и bash скрипты для разворачивания **kubernetes-кластера**. Для удобства  и пошаговой установки создал **Makefile** (находится в папке ansible) где описал все шаги разворачивания.
+
+## Homework-27
+1. Создаем машины **master-1** на GCE и по аналогии **woker-1** и **worker-2**.
+2. Строим **swarm cluster**
+```
+eval $(docker-machine env master-1)
+docker swarm init
+```
+3. Кластер создан и добавим к нему новые ноды
+```
+eval $(docker-machine env worker-1)
+docker swarm join --token <наш токен> <advertise адрес manager’a>:2377
+eval $(docker-machine env worker-2)
+docker swarm join --token <наш токен> <advertise адрес manager’a>:2377
+```
+4. Сервисы и их зависимости объединяем в **STACK** описываем в формате **docker-compose**
+5. Поднимаем **STACK**
+```
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DEV
+```
+
+6. Размещаем сервисы по нодам и деплоим
+```
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DE
+```
+7. Масштабируем сервисы:
+```
+services:
+  post:
+    image: ${USERNAME}/post:${POST_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  comment:
+    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  ui:
+    image: ${USERNAME}/ui:${UI_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - "${UI_PORT}:9292/tcp"
+    networks:
+      - front_net
+  ```
+8. Для задач монитроинга запустим **node_exporter**
+```
+node-exporter: 
+    image: prom/node-exporter:
+v0.15.0 
+deploy: 
+      mode: global 
+```
+9. Добавим в кластер **worker-3**. В контейнере запустиля только **node-exporter**, после увеличения реплик и деплоя, в контейнере поднялся сервис **Post**. При добавлении нового **workera** запустился сразу сервис с **mode: global**, после деплоя на нем запустился сервис с **mode: replicated**.
+10. Задание с **update_config**,**ресурсами**,и **политика перезапуска**:
+```
+version: '3.5'
+services:
+
+  mongo:
+    image: mongo:${MONGO_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.labels.reliability == high
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+
+  post:
+    image: ${USERNAME}/post:${POST_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 15
+        delay: 1s
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 300M
+      update_config:
+        delay: 10s
+        parallelism: 2
+        failure_action: rollback
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - front_net
+      - back_net
+
+  comment:
+    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 15
+        delay: 1s
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 300M
+      update_config:
+        delay: 10s
+        parallelism: 2
+        failure_action: rollback
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+
+    networks:
+      - front_net
+      - back_net
+
+  ui:
+    image: ${USERNAME}/ui:${UI_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        delay: 3s
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 150M
+      replicas: 3
+      update_config:
+        delay: 5s
+        parallelism: 1
+        failure_action: pause
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - "${UI_PORT}:9292/tcp"
+    networks:
+      - front_net
+
+volumes:
+  mongo_data: {}
+
+networks:
+  back_net: {}
+  front_net: {}
+  ```
+11. Создал **docker-compose.monitoring.yml** для каждого сервиса добавил **mode: global**.
+
+
+## Homework-25
+1.Создаем новую ветку **logging-1**б где и будем выполнять ДЗ.
+2.Обновляеи код микросервисов в директории **/src**.
+3. Создадим **Docker host** **logging** в GCE.
+4. Создаем отдельный compose-файл для логирования **docker/docker-compose-logging.yml** 
+```
+version: '3'
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  fluentd:
+    build: ./fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+
+
+  elasticsearch:
+    image: elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana
+    ports:
+      - "8080:5601"
+   ```
+  5. Используем **fluentd** для агрегации и парсинга логов. В директории **docker** создадим директроию **fluentd**, а в ней создадим **Dockerfile** lля сборки и файл конфигурации **fluent.conf**.
+  6. Запустим сервисы и выполним команду для просмотров логов **post** ```docker-compose logs -f post```.
+  7. Отправим логи во **fluentd** и визуализируем их в **Kibana**.
+  8. Используем фильтры для для парсинга логов, приходящих от **post**, добавим их конфиг **fluentd**:
+  ```
+  <source>
+  @type forward
+  port 24224
+  bind 0.0.0.0
+</source>
+
+<filter service.post>
+  @type parser
+  format json
+  key_name log
+</filter>
+
+<filter service.ui>
+  @type parser
+  key_name log
+  format grok
+  grok_pattern %{RUBY_LOGGER}
+</filter>
+
+<filter service.ui>
+  @type parser
+  format grok
+  grok_pattern service=%{WORD:service} \| event=%{WORD:event} \| request_id=%{GREEDYDATA:request_id} \| message='%{GREEDYDATA:message}'
+  key_name message
+  reserve_data true
+</filter>
+
+<match *.**>
+  @type copy
+  <store>
+    @type elasticsearch
+    host elasticsearch
+    port 9200
+    logstash_format true
+    logstash_prefix fluentd
+    logstash_dateformat %Y%m%d
+    include_tag_key true
+    type_name access_log
+    tag_key @log_name
+    flush_interval 1s
+  </store>
+  <store>
+    @type stdout
+  </store>
+</match>
+```
+7. По аналогии с **post** сервисом определим для **ui** сервиса, добавим драйвер для логирования **fluentd** в compose-файл.
+
+8. Добавим в **docker-compose-logging.yml** сервис **Zipkin** для логирования распределенного трейсинга.
+
+
+
+## Homework-23
+1. Оставим описание приложений в **docker-compose.yml**, а мониторинг выделим в отдельный файл **docker-compose-monitoring.yml**
+2. Для наблюдения за состоянием наших Docker контейнеров используем **cAdvisor**.
+3. Для визуализации метрик из **Prometheus** используем **Grafana**.
+4. Создадим директорию **grafana/dashboards**, куда будем помещать шаблоны **.json** дашбордов.
+5. Создадим директорию **monitoring/alertmanager**, где создадаим **Dockerfile** и **config.yml** для отправки сообщений в **slack**.
+6. Запушем собранные нами образы на **DcokerHub**.
+7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
+8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
+
+
+
+
 
 ## Homework-28
 1. Создал **deployment** **post**,**ui**,**comment**,**mongo**.
