@@ -77,9 +77,11 @@ dependencies:
  ```
  14. Загрузим зависимости: ``` helm dep update ```.
  15. Установим наше приложение: ``` helm install  reddit --name reddit-test ```.
- 16.Работа с **GitLab CI**, скриншоты работающих **pipeline**
  
-  ![Pipeline1](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/1.png?raw=true"Optional Title")
+ 16.Работа с **GitLab CI**, скриншоты работающих **pipeline**:
+ 
+ 
+![Pipeline1](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/1.png?raw=true "Optional Title")
   
 ![Pipeline2](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/2.png?raw=true "Optional Title")
 
