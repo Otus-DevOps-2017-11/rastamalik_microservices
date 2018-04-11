@@ -79,15 +79,23 @@ dependencies:
  15. Установим наше приложение: ``` helm install  reddit --name reddit-test ```.
  16.Работа с **GitLab CI**, скриншоты работающих **pipeline**
  
-  ![Pipeline1]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/1.png?raw=true"Optional Title")
-![Pipeline2]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/2.png?raw=true "Optional Title")
- ![Pipeline3]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/3.png?raw=true "Optional Title")
-![Pipeline4]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/4.png?raw=true "Optional Title")
-![Pipeline5]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/5.png?raw=true "Optional Title")
-![Pipeline6]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/6.png?raw=true "Optional Title")
-![Pipeline7]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/7.png?raw=true "Optional Title")
-![Pipeline8]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/8.png?raw=true "Optional Title")
-![Pipeline9]https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/9.png?raw=true "Optional Title")
+  ![Pipeline1](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/1.png?raw=true"Optional Title")
+  
+![Pipeline2](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/2.png?raw=true "Optional Title")
+
+ ![Pipeline3](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/3.png?raw=true "Optional Title")
+ 
+![Pipeline4](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/4.png?raw=true "Optional Title")
+
+![Pipeline5](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/5.png?raw=true "Optional Title")
+
+![Pipeline6](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/6.png?raw=true "Optional Title")
+
+![Pipeline7](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/7.png?raw=true "Optional Title")
+
+![Pipeline8](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/8.png?raw=true "Optional Title")
+
+![Pipeline9](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/9.png?raw=true "Optional Title")
 
 
 ## Homework-30
