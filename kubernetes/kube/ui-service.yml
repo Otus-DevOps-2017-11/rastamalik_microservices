@@ -9,7 +9,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    port: 9292
+  - port: 9292
     protocol: TCP
     targetPort: 9292
   selector:
