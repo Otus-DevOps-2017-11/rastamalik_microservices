@@ -1,0 +1,77 @@
+version: '3.5'
+services:
+ prometheus:
+  image: ${USERNAME}/prometheus
+  deploy:
+    mode: global
+  ports:
+   - '9090:9090'
+ grafana:
+      image: grafana/grafana:5.0.0
+      deploy:
+        mode: global
+      volumes:
+        - grafana_data:/var/lib/grafana
+      environment:
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_SECURITY_ADMIN_PASSWORD=secret
+      depends_on:
+        - prometheus
+      ports:
+        - 3000:3000
+ alertmanager:
+   image: ${USERNAME}/alertmanager
+   deploy:
+     mode: global
+   command:
+     - '--config.file=/etc/alertmanager/config.yml'
+   ports:
+      - 9093:9093
+
+
+ cadvisor:
+  image: google/cadvisor:v0.29.0
+  deploy:
+    mode: global
+
+  volumes:
+       - '/:/rootfs:ro'
+       - '/var/run:/var/run:rw'
+       - '/sys:/sys:ro'
+       - '/var/lib/docker/:/var/lib/docker:ro'
+       - '/dev/disk/:/dev/disk:ro'
+  ports:
+   - '8080:8080'
+
+
+ node-exporter:
+  image: prom/node-exporter:v0.15.0
+  deploy:
+     mode: global
+  volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/rootfs:ro
+  command:
+    - '--path.procfs=/host/proc'
+    - '--path.sysfs=/host/sys'
+    - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
+# mongodb-exporter:
+#  image: mongodb_exporter
+#  user: root
+#  environment:
+#    MONGODB_URL: "mongodb://comment_db:27017"
+#  networks:
+#     reddit:
+#       aliases:
+#        - mongodb_exporter
+# stackdriver-exporter:
+ #   image: frodenas/stackdriver-exporter
+  #  user: root
+   # networks:
+    #    reddit:
+
+
+volumes:
+  grafana_data:
