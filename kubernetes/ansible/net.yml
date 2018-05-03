@@ -1,0 +1,44 @@
+---
+- name: Create networks
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+   service_account_email: rastamalik@docker-193613.iam.gserviceaccount.com
+   credentials_file: docker.json
+   project_id: docker-193613
+   
+  tasks:
+    - name: Create network kubernetes-the-hard-way
+      gce_net: name=kubernetes-the-hard-way mode=auto state=present    service_account_email="{{ service_account_email }}"  credentials_file="{{ credentials_file }}"  project_id="{{ project_id }}"
+    - name: Create subnet kubernetes
+      gce_net: name=kubernetes-the-hard-way mode=custom subnet_name=kubernetes subnet_region=europe-west1 ipv4_range='10.240.0.0/24' service_account_email="{{ service_account_email }}" credentials_file="{{ credentials_file }}" project_id="{{ project_id }}"
+    - name: Create firewall-rules internal-allow
+      gce_net:
+               service_account_email: "{{ service_account_email }}"
+               credentials_file: "{{ credentials_file }}"
+               project_id: "{{ project_id }}"
+               name: kubernetes-the-hard-way
+               fwname: kubernetes-the-hard-way-allow-internal 
+               allowed: tcp:1-65535;udp:1-65535;icmp  
+      src_range: 10.240.0.0/24,10.200.0.0/16  
+                          
+    - name: Create firewall-rules external-allow
+      gce_net: 
+               service_account_email: "{{ service_account_email }}"
+               credentials_file: "{{ credentials_file }}"
+               project_id: "{{ project_id }}"
+               name: kubernetes-the-hard-way  
+               fwname: kubernetes-the-hard-way-allow-external   
+               allowed: tcp:22;tcp:6443;icmp
+      src_range: 0.0.0.0/0   
+
+ 
+    - name: Create ip global
+      gce_eip:
+          service_account_email: "{{ service_account_email }}"
+          credentials_file: "{{ credentials_file }}"
+          project_id: "{{ project_id }}"
+          name: kubernetes-the-hard-way
+          region: europe-west1
+          state: present
