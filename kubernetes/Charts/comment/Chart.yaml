@@ -1,0 +1,8 @@
+---
+name: comment 
+version: 1.0.0 
+description: OTUS reddit application UI 
+maintainers: 
+  - name: Alexander Mozhaev 
+    email: rastamalik@gmail.com
+appVersion: 1.0 

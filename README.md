@@ -1,4 +1,106 @@
 # rastamalik_microservices
+
+## Homework-31
+1. Устанавливаем **Helm**.
+2. Сменим кластер, на кластер развернутый на GKP.
+3. Установим серверную часть **Helm** - **Tiller**.
+4. Создадим директорию **Charts** со следующей структурой:
+```
+|--Charts
+     |-- comment
+     |-- post
+     |-- reddit
+     |-- ui
+ ```
+5. Для каждой компоненты создадим файл-описание **chart.yaml**.
+6. Создадим в каждой директории папку **templates**, куда поместим все манифесты разработанные ранее для сервисов:
+-service, -deployment, -ingress, поменяв  у них расширение на .yaml.
+7. Шаблонизируем манифесты, определив значения в **values.yaml**.
+8. Создадим **helpers.tpl** для определения ``` {{ .Release.Name }}-{{ .Chart.Name }} ```:
+```
+{{- define "comment.fullname" -}} 
+{{- printf "%s-%s" .Release.Name .Chart.Name }} 
+{{- end -}} 
+```
+9. В конце мы должны получить структуру:
+```
+|--comment
+|    |-- Chart.yaml
+|    |-- charts
+|    |-- templates
+|    |     |--_helpers.tpl
+|    |     |-- deployment.yaml
+|    |     |-- service.yaml
+|    |--- values.yaml
+|--post
+|   |-- Chart.yaml
+|   |-- templates
+|   |    |-- _helpers.tpl
+|   |    |-- deployment.yaml
+|   |    |-- service.yaml
+|   |---values.yaml
+|--ui
+    |-- Chart.yaml
+    |-- templates
+    |      |-- _helpers.tpl
+    |      |-- deployment.yaml
+    |      |-- ingress.yaml
+    |      |-- service.yaml
+    |-- values.yaml
+```
+10. Каждый чарт можно запустить по-отдельности командой:
+```
+helm install <chart-path> <release-name>
+```
+11. Для управления зависимостями создадим чарт **reddit**:
+```
+reddit/Chart.yaml
+name: reddit
+version: 0.1.0
+description: OTUS sample reddit application
+maintainers:
+  - name: Alexandr Mozhaev
+    email: rastamalik@gmail.com
+ ```
+12. Создадим пустой **reddit/values.yaml**
+13. В директории **reddit** создадим файл **requirements.yaml**:
+```
+dependencies:
+  - name: ui
+    version: "1.0.0"
+    repository: "file://../ui"
+  - name: post
+    version: 1.0.0
+    repository: file://../post
+  - name: comment
+    version: 1.0.0
+    repository: file://../comment
+ ```
+ 14. Загрузим зависимости: ``` helm dep update ```.
+ 15. Установим наше приложение: ``` helm install  reddit --name reddit-test ```.
+ 
+ 16.Работа с **GitLab CI**, скриншоты работающих **pipeline**:
+ 
+ 
+![Pipeline1](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/1.png?raw=true "Optional Title")
+  
+![Pipeline2](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/2.png?raw=true "Optional Title")
+
+ ![Pipeline3](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/3.png?raw=true "Optional Title")
+ 
+![Pipeline4](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/4.png?raw=true "Optional Title")
+
+![Pipeline5](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/5.png?raw=true "Optional Title")
+
+![Pipeline6](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/6.png?raw=true "Optional Title")
+
+![Pipeline7](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/7.png?raw=true "Optional Title")
+
+![Pipeline8](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/8.png?raw=true "Optional Title")
+
+![Pipeline9](https://github.com/Otus-DevOps-2017-11/rastamalik_microservices/blob/kubernetes-4/kubernetes/Charts/9.png?raw=true "Optional Title")
+
+
 ## Homework-30
 1. Настроим **ui-service.yml** в качестве **LoadBalancer** (внешнего облачного балансировщика) как единую точку входа в наши сервисы.
 2. Создадим **ingress** для сервиса **UI**:
@@ -515,7 +617,6 @@ services:
 6. Запушем собранные нами образы на **DcokerHub**.
 7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
 8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
-
 
 
 
@@ -1297,6 +1398,7 @@ services:
 6. Запушем собранные нами образы на **DcokerHub**.
 7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
 8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
+
 
 
 
