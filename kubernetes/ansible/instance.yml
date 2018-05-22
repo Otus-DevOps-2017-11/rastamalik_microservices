@@ -21,7 +21,11 @@
          zone: europe-west1-b
          network: kubernetes-the-hard-way
          subnetwork: kubernetes
+
+         metadata: '{"sshKeys":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjPC5vIyX+oLSU+eSZvAY9jTxuWUXCPvlvS+wSV9zqQ1ffsl7I59G1ZW7Jwm7v5l7E3G1GNWwvoY9ykYx9uwIPrwuadgcKrdqWb6Ruog/PXV5yDQ/LU3iiA6pr7LYcgw2y8XNENQnGC255ynVv8yHeu6I3j7JrLnm5lpYl5FYAh1yWhdqUDbeyjOi5xTvaqpt2H20mRIT7rvkLNSCx/wET9/O7xEVDL0EtaysnzjV8wqUBCRML3/zSrg+lkEqfbNg7Vn3cyghAaZ0Wpuenco+yJcGzeNoudBlDNkCFUKJrWbVUeqPDHFln4e1CK/MIZ6ZARyEfSVhJTS4FdiEQx4bZ mozhaev@elk-yar-krista.ru"}'
+
          metadata: '{"sshKeys":"ssh-rsa "}'
+
 
          service_account_permissions:
                      - compute-rw
@@ -47,7 +51,7 @@
          zone: europe-west1-b
          network: kubernetes-the-hard-way
          subnetwork: kubernetes
-         metadata: '{"sshKeys":"ssh-rsa "}'
+
 
          service_account_permissions:
                      - compute-rw

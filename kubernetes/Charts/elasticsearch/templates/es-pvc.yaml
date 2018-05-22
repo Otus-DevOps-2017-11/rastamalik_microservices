@@ -2,15 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: mongo-pvc-dynamic
+  name: elasticsearch-logging-claim
 spec:
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
-
-  storageClassName: slow
-
-  storageClassName: fast
-
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
+

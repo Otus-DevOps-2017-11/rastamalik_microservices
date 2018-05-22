@@ -1,5 +1,80 @@
 # rastamalik_microservices
 
+
+## Homework-32
+1. Развертывание Prometheus в k8s.
+2. Prometheus будем ставить с помощью Helm чарта.
+```
+Склонируем репозиторий с чартами:
+git clone https://github.com/kubernetes/charts.git kube-charts
+Скачаем PR, в котором включена поддержка версии  2.0
+cd kube-charts ; git fetch origin pull/2767/head:prom_2.0
+Установим Prometheus:
+git checkout prom_2.0 ; cd ..
+cp -r kube-charts/sable/prometheus <директория kubernetes/charts>
+rm -r kube-charts
+cd charts/prometheus
+```
+3. Внутри директории чарта создадим файл **custom_values.yml**.
+4. Запустим **Prometheus**:
+```
+helm upgrade prom . -f custom_values.yml --install
+```
+5. Разбить конфигурацию job **reddit-endpoints** такб чтобы было 3 job для каждой коипонент приложения:
+```
+ - job_name: 'comment-endpoints'
+        kubernetes_sd_configs:
+          - role: service
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_label_component]
+            action: keep
+            regex: comment
+
+      - job_name: 'post-endpoints'
+        kubernetes_sd_configs:
+          - role: service
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_label_component]
+            action: keep
+            regex: post
+      - job_name: 'ui-endpoints'
+        kubernetes_sd_configs:
+          - role: service
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_label_component]
+            action: keep
+            regex: ui
+
+      - job_name: 'reddit-production'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_namespace]
+            action: keep
+            regex: reddit;(production|staging)+
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+  ```
+6. Установим **Grafana** с помощью Helm:
+```
+helm upgrade --install grafana stable/grafana --set "server.adminPassword=admin" \
+--set "server.service.type=NodePort" \
+--set "server.ingress.enabled=true" \
+--set "server.ingress.hosts={reddit-grafana}"
+```
+7. Логирование.
+8. Логирование в k8s будем выстраивать с помощью уже известного стека  EFK: 
+• ElasticSearch -  база данных + поисковый движок
+• Fluentd - шипер  (отправитель) и агрегатор логов
+• Kibana - веб - интерфейс для запросов в хранилище и отображения их результатов.
+
+
+
+
 ## Homework-31
 1. Устанавливаем **Helm**.
 2. Сменим кластер, на кластер развернутый на GKP.
@@ -617,6 +692,8 @@ services:
 6. Запушем собранные нами образы на **DcokerHub**.
 7. В папке **src** создал **Makefile** для сборки образов и отправки их на **DockerHub**.
 8. Ссылка на docker-hub https://hub.docker.com/u/rastamalik/
+
+
 
 
 
